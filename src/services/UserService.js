@@ -37,44 +37,57 @@ const createUser = (newUser) => {
 }
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { email, password } = userLogin
+        const { email, password } = userLogin;
         try {
-            const checkUser = await User.findOne({
-                email: email
-            })
-            if (checkUser === null) {
-                resolve({
+            // Kiểm tra người dùng trong MongoDB
+            const checkUser = await User.findOne({ email: email });
+            if (!checkUser) {
+                // Người dùng không tồn tại
+                return reject({
                     status: 'ERR',
                     message: 'The user is not defined'
-                })
+                });
             }
-            const comparePassword = bcrypt.compareSync(password, checkUser.password)
+
+            // So sánh mật khẩu (dùng bcrypt.compare cho bất đồng bộ)
+            const comparePassword = await bcrypt.compare(password, checkUser.password);
             if (!comparePassword) {
-                resolve({
+                // Mật khẩu không đúng
+                return reject({
                     status: 'ERR',
                     message: 'The password or user is incorrect'
-                })
+                });
             }
+
+            // Tạo access_token và refresh_token
             const access_token = await generalAccessToken({
-                id: checkUser.id,
+                id: checkUser._id,  // Sử dụng _id thay vì id
                 isAdmin: checkUser.isAdmin
-            })
+            });
+
             const refresh_token = await generalRefreshToken({
-                id: checkUser.id,
+                id: checkUser._id,  // Sử dụng _id thay vì id
                 isAdmin: checkUser.isAdmin
-            })
+            });
+
+            // Trả về thông tin đăng nhập thành công
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 access_token,
                 refresh_token
-            })
+            });
 
         } catch (e) {
-            reject(e)
+            // Nếu có lỗi xảy ra
+            reject({
+                status: 'ERR',
+                message: 'An error occurred during login',
+                error: e
+            });
         }
-    })
-}
+    });
+};
 const updateUser = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
