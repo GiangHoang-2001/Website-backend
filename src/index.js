@@ -10,7 +10,7 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT || 3001
 
-const allowedOrigins = ['http://localhost:3000', 'https://websiteshopmall.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'https://websiteshopmall.vercel.app'];
 
 app.use(cors({
     origin: function (origin, callback) {
