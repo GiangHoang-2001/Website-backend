@@ -139,7 +139,7 @@ const getAllProduct = (limit, page, sort, filter) => {
             }
 
             const products = await query
-                .select('name price  selled countInStock rating type discount ')
+                .select('name price  selled countInStock rating type discount image ')
                 .limit(limit)
                 .skip(page * limit)
                 .lean();

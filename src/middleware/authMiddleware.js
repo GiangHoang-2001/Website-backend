@@ -33,6 +33,7 @@ const authMiddleware = (req, res, next) => {
 // Middleware để kiểm tra quyền của người dùng (cả admin và người dùng cá nhân)
 const authUserMiddleware = (req, res, next) => {
     const token = req.headers.token?.split(" ")[1]
+
     const userId = req.params.id
     if (!token) {
         return res.status(401).json({
