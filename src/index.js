@@ -11,7 +11,7 @@ const app = express()
 const port = process.env.PORT || 3001
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://mallshop-eight.vercel.app/'],
+    origin: 'http://localhost:3000',
     credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
